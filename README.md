@@ -31,6 +31,7 @@ labels:
 
 * exclusion regex
 * PR support
+* tests
 
 ## Contributing
 
