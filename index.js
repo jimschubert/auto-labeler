@@ -19,10 +19,10 @@ function stripMargin (template, ...expressions) {
 }
 
 module.exports = app => {
-  // Your code here
-  app.log('Yay, the app was loaded!')
+  app.on('issues.opened', doLabel)
+  app.on('pull_request.opened', doLabel)
 
-  app.on('issues.opened', async context => {
+  async function doLabel (context) {
     if (!context.isBot) {
       const config = await context.config('auto-labeler.yml')
       let labels = []
@@ -43,10 +43,9 @@ module.exports = app => {
         labels = defaultLabels
       }
 
-      app.log(config)
-      app.log(labels)
-
+      // noinspection JSUnresolvedVariable
       if (config && config.comment) {
+        // noinspection JSUnresolvedVariable
         comment = stripMargin`${config.comment}`
       } else {
         comment = stripMargin`
@@ -54,21 +53,25 @@ module.exports = app => {
           `
       }
 
-      const body = context.payload.issue.body
-      let found = false
-      if (body != null && body.length > 0) {
+      // noinspection JSUnresolvedVariable
+      const target = context.payload.issue || context.payload.pull_request
+
+      const body = `${target.title} ${target.body}`
+      let addLabels = new Set()
+      if (body.length > 3) {
         for (const v of labels) {
-          // app.log(`Evaluating ${body} for ${v}…`)
           if (v.match.test(body)) {
-            // app.log(`Yes! ${body} matches ${v.match}`)
-            let params = context.issue({labels: [v.label]})
-            await context.github.issues.addLabels(params)
-            found = true
+            addLabels.add(v.label)
           }
+        }
+
+        if (addLabels.size > 0) {
+          let params = context.issue({labels: Array.from(addLabels)})
+          await context.github.issues.addLabels(params)
         }
       }
 
-      if (found && comment && comment.length > 0) {
+      if (addLabels.size > 0 && comment && comment.length > 0) {
         let issueComment = context.issue({
           body: comment
         })
@@ -76,11 +79,7 @@ module.exports = app => {
         return context.github.issues.createComment(issueComment)
       }
     }
-  })
-
-  app.on(`*`, async context => {
-    context.log({event: context.event, action: context.payload.action})
-  })
+  }
 
   // For more information on building apps:
   // https://probot.github.io/docs/

@@ -2,6 +2,8 @@
 
 > A GitHub App built with [Probot](https://github.com/probot/probot) that A Probot app which automatically labels GitHub Issues and Pull Requests.
 
+Currently, this only supports self-hosted instances. Read up on Probot's development/deployment guidelines to get setup.
+
 ## Setup
 
 ```sh
@@ -30,7 +32,7 @@ labels:
 ## TODO
 
 * exclusion regex
-* PR support
+* ~~PR support~~
 * tests
 
 ## Contributing
