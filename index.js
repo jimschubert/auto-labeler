@@ -63,6 +63,8 @@ module.exports = app => {
           if (v.match.test(body)) {
             addLabels.add(v.label)
           }
+          // reset regex state
+          v.match.lastIndex = 0
         }
 
         if (addLabels.size > 0) {
