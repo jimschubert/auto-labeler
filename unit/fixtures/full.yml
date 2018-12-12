@@ -21,9 +21,9 @@ labels:
     include:
       - '\btest(ing)?\b'
       - '\bhelp( me)?\b'
-    exclude: []
+    exclude:
+      - '\b\[asdf\]\b'
   'enhancement':
     include:
       - '\bfeat\b'
     exclude: []
-

@@ -1,0 +1,12 @@
+comment: |
+  Thanks for the contribution!
+  I have applied any labels matching special text in your title and description.
+  Please review the labels and make any necessary changes.
+labels:
+  'bug':
+  - '\bbug[s]?\b'
+  'help wanted':
+  - '\btest(ing)?\b'
+  - '\bhelp( me)?\b'
+  'enhancement':
+  - '\bfeat\b'

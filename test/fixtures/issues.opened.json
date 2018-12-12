@@ -3,13 +3,16 @@
   "issue": {
     "number": 1,
     "user": {
-      "login": "hiimbex"
+      "login": "jimschubert"
     }
   },
   "repository": {
-    "name": "testing-things",
+    "name": "auto-labeler-tests",
     "owner": {
-      "login": "hiimbex"
+      "login": "jimschubert"
     }
+  },
+  "sender": {
+    "type": "human"
   }
 }
