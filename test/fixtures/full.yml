@@ -15,14 +15,15 @@ comments:
 labels:
   'bug':
     include:
-    - '\bbug[s]?\b'
+      - '\bbug[s]?\b'
     exclude: []
   'help wanted':
     include:
-    - '\btest(ing)?\b'
-    - '\bhelp( me)?\b'
-    exclude: []
+      - '\btest(ing)?\b'
+      - '\bhelp( me)?\b'
+    exclude:
+      - '\b\[asdf\]\b'
   'enhancement':
     include:
-    - '\bfeat\b'
+      - '\bfeat\b'
     exclude: []

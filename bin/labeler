@@ -1,0 +1,115 @@
+#!/usr/bin/env node
+
+'use strict'
+
+const fs = require('fs')
+const path = require('path')
+const util = require('util')
+
+const colors = require('colors')
+const program = require('commander')
+const Joi = require('joi')
+const yaml = require('js-yaml')
+
+const schemas = require('../lib/schema')
+
+const availableSchemas = Object.keys(schemas)
+
+const samples = {
+  full: path.join(__dirname, '..', 'samples', 'full.yml'),
+  simple: path.join(__dirname, '..', 'samples', 'simple.yml')
+}
+
+function joiReport (error) {
+  if (error instanceof Error === false) {
+    throw new Error('Joi error was not an Error.')
+  }
+  let messages = []
+  if (error.details != null && Array.isArray(error.details)) {
+    for (const detail of error.details) {
+      let path = detail.path.join('.')
+      messages.push({
+        path: path,
+        message: detail.message
+      })
+    }
+  } else if (error.message) {
+    messages.push({
+      path: null,
+      message: error.message
+    })
+  }
+  return messages
+}
+
+program
+  .version(
+    JSON.parse(
+      fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8')
+    ).version
+  )
+  .usage('[options] [files]')
+
+program
+  .command('init <path>')
+  .description('initialize a yaml config in the .github directory located at <path>')
+  .option('-s, --schema <schema>', `initialize a specific schema example (${availableSchemas.join('|')})`, 'full')
+  .action((p, cmd) => {
+    let schema = cmd.schema || 'full'
+    let s = schema === 'simple' ? samples.simple : samples.full
+
+    const mkdir = require('mkdirp')
+    mkdir.sync(p)
+
+    const file = fs.readFileSync(s)
+    const target = path.join(p, 'auto-labeler.yml')
+    fs.writeFileSync(target, file)
+
+    console.log(`Wrote config file using '${schema}' schema to ${target}`)
+  })
+
+program
+  .command('validate <path>')
+  .description('Validate a configuration file located at <path>')
+  .option('-d, --details', 'describe the schema object details used for validation')
+  .option('-s, --schema <schema>', `force validation using schema (${availableSchemas.join('|')})`)
+  .action((location, cmd) => {
+    let input = path.normalize(location)
+    if (!fs.existsSync(input)) {
+      console.error(`${colors.red('file not found')}: ${input} does not exist. Check the spelling and try again.`)
+      process.exit(1)
+    }
+
+    let contents = yaml.safeLoad(fs.readFileSync(input, 'utf8'))
+    let schema = cmd.schema || 'full'
+    let validator = schema === 'simple' ? schemas.simple : schemas.full
+
+    let dumpSchema = function () {
+      console.error(colors.bgBlack.green.bold(`\nSchema (${schema}):`))
+      console.error(colors.bgBlack.green.dim(util.inspect(validator.describe(), {depth: 9, colors: true})))
+    }
+
+    let validation = Joi.validate(contents, validator, {
+      abortEarly: false,
+      convert: false
+    })
+    if (validation.error) {
+      console.error(colors.red(`[failure] ${input} is not valid against ${schema} schema.\n`))
+      for (const err of joiReport(validation.error)) {
+        console.error(`${colors.red.underline(err.path)}: ${err.message}`)
+      }
+
+      if (cmd.details) {
+        dumpSchema()
+      }
+      process.exit(1)
+    }
+
+    console.log(`${colors.green('[success]')} ${input} is valid against ${schema} schema.`)
+    if (cmd.details) {
+      dumpSchema()
+    }
+    process.exit(0)
+  })
+
+program.parse(process.argv)
