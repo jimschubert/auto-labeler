@@ -1,0 +1,23 @@
+enable:
+  issues: true
+  prs: true
+comments:
+  issues: true
+  prs: |
+    Thanks for the contribution!
+    I have applied any labels matching special text in your title and description.
+
+    Please review the labels and make any necessary changes.
+labels:
+  'bug':
+  'help wanted':
+    exclude: []
+  'enhancement':
+    include:
+      - '\bfeat\b'
+    asdf: []
+  'other': 1234
+  'wow':
+    'wow':
+      'wow': []
+something: 'else'
