@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "probot.js", "use": "@now/node" }
+  ],
+  "env": {
+    "APP_ID": "@app-id",
+    "PRIVATE_KEY": "@private-key-base64",
+    "WEBHOOK_SECRET": "@webhook-secret",
+    "NODE_ENV": "production"
+  },
+  "routes": [
+    { "src": "/probot/.*", "dest": "probot.js" }
+  ]
+}

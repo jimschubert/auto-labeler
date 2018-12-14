@@ -12,3 +12,5 @@ test/
 /yarn.lock
 *.tgz
 /github.js
+now.json
+probot.js
