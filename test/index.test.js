@@ -2,7 +2,7 @@ const nock = require('nock')
 const fs = require('fs')
 const path = require('path')
 // Requiring our app implementation
-const myProbotApp = require('..')
+const myProbotApp = require('../github')
 const { Probot } = require('probot')
 
 // Requiring our fixtures

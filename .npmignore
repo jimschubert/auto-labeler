@@ -1,0 +1,13 @@
+/travis.yml
+/CONTRIBUTING.md
+/CODE_OF_CONDUCT.md
+.env
+.env.example
+unit/
+test/
+.bak/
+.idea/
+/app.yml
+/yarn.lock
+*.tgz
+/github.js
