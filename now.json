@@ -1,15 +1,16 @@
 {
   "version": 2,
   "builds": [
-    { "src": "probot.js", "use": "@now/node" }
+    { "src": "index.js", "use": "@now/node" , "config": { "maxLambdaSize": "20mb" } }
   ],
+  "name": "auto-labeler",
   "env": {
     "APP_ID": "@app-id",
-    "PRIVATE_KEY": "@private-key-base64",
+    "PRIVATE_KEY": "@private-key",
     "WEBHOOK_SECRET": "@webhook-secret",
     "NODE_ENV": "production"
   },
   "routes": [
-    { "src": "/probot/.*", "dest": "probot.js" }
+    { "src": "/probot/.*", "dest": "index.js" }
   ]
 }

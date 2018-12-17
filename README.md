@@ -93,6 +93,48 @@ labels:
 
 ```
 
+## Deployment
+
+Deployment via [now](https://zeit.co/now) requires a now account, and the following secrets configured:
+
+* app-id
+* private-key
+* webhook-secret
+
+The secrets must match the values defined in the app's [app settings](https://github.com/settings/apps).
+
+NOTE: if you're using Google Chrome and auto-filling passwords in GitHub, you _must_ replace the webhook secret anytime you change app settings.
+
+`private-key` is a base64 encoded string of your private key. You may need to generate a new key and run the following:
+
+```bash
+now secret add private-key "$(openssl base64 < /path/to/your/downloaded.pem| tr -d '\n')"
+```
+
+A new webhook secret can be generated:
+
+```bash
+ruby -rsecurerandom -e 'puts SecureRandom.hex(20)'
+```
+
+Make now of this value, update your app settings with the generated secret, then store it in now secrets:
+
+```bash
+now secret add webhook-seret YOUR_SECRET_HERE
+```
+
+With these added to now secrets, there are no additional configuration changes to be made. To deploy:
+
+```bash
+now -n auto-labeler
+```
+
+Additional environment variables can be passed to this deploy, for example:
+
+```bash
+now -n auto-labeler -e LOG_LEVEL=trace
+```
+
 ## Contributing
 
 If you have suggestions for how auto-labeler could be improved, or want to report a bug, open an issue! We'd love all and any contributions.
